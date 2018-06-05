@@ -7,12 +7,15 @@
 //
 
 import UIKit
-import AVFoundation // import the class
+import AVFoundation
+
 
 class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     
     // MARK: Properties
     var audioRecorder: AVAudioRecorder!
+    
+    let alert = UIAlertController(title: "recording failure", message: "Audio Recording Failed", preferredStyle: .alert)
     
     @IBOutlet weak var recordingLabel: UILabel!
     @IBOutlet weak var recordButton: UIButton!
@@ -31,17 +34,9 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     
     // change UI state
     func configureUI(recording: Bool){
-        if recording{
-            print("record button is pressed")
-            recordingLabel.text = "Recording in Progress"
-            stopRecordingButton.isEnabled = true
-            recordButton.isEnabled = false
-        } else {
-            print("stop button is pressed")
-            recordingLabel.text = "Tap to Record"
-            stopRecordingButton.isEnabled = false
-            recordButton.isEnabled = true
-        }
+        recordingLabel.text = recording ? "Recording in Progress" : "Tap to Record"
+        stopRecordingButton.isEnabled = recording
+        recordButton.isEnabled = !recording
     }
     
     // MARK : record audio
@@ -87,6 +82,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
             performSegue(withIdentifier: "stopRecording", sender: audioRecorder.url) // perform the segue way to the second view
         } else {
             print("recroding failed")
+            self.present(alert, animated: true, completion: nil)
         }
     }
     
